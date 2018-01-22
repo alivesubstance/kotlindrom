@@ -72,13 +72,12 @@ fun String.runCommand(workingDir: File): String {
                 .redirectError(ProcessBuilder.Redirect.PIPE)
                 .start()
 
-        proc.waitFor(10, TimeUnit.SECONDS)
-
+        val procText = proc.inputStream.bufferedReader().readText()
         if (proc.exitValue() != 0) {
-
+            throw RuntimeException("Error while executing $this \n ${proc.errorStream.bufferedReader().readText()}")
         }
 
-        return proc.inputStream.bufferedReader().readText()
+        return procText
     } catch(e: IOException) {
         e.printStackTrace()
         throw RuntimeException(e)

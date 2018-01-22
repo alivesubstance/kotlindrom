@@ -22,5 +22,4 @@
     "coNewBranch" : "git checkout -b %s",
     "listBranches" : "git branch -a"
   }
-
 }

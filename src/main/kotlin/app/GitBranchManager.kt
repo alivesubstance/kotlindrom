@@ -2,6 +2,8 @@ package app
 
 import com.fasterxml.jackson.module.kotlin.*
 import java.io.File
+import java.net.URI
+import java.net.URL
 
 fun main(args: Array<String>) {
     GitBranchManager.start()
@@ -9,8 +11,7 @@ fun main(args: Array<String>) {
 
 object GitBranchManager {
 
-    //TODO remove hardcode
-    var projectsFile = "C:\\code\\kotlin\\src\\main\\resources\\config.json"
+    var configFile = "config.json";
 
     fun start() {
         println("Available projects")
@@ -38,7 +39,7 @@ object GitBranchManager {
     }
 
     private fun readConfig(): Config {
-        val json = File(projectsFile).bufferedReader().readText()
+        val json = GitBranchManager::class.java.getResource("/" + configFile).readText()
         return jacksonObjectMapper().readValue(json)
     }
 
