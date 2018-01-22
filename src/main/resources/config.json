@@ -1,0 +1,26 @@
+{
+  "projectsRootPath" : "c:\\code",
+  "projects": [
+    "bundle-pleeco",
+    "bundle-scotia",
+    "pleeco-core-acl",
+    "pleeco-core-cloud",
+    "pleeco-core-commons",
+    "pleeco-core-druid",
+    "pleeco-core-etl",
+    "pleeco-core-eventmanager",
+    "pleeco-core-migrator",
+    "pleeco-core-octopus",
+    "pleeco-core-octopus-graph",
+    "pleeco-core-reporting",
+    "pleeco-module-basketanalysis",
+    "pleeco-module-clientscorecard",
+    "pleeco-module-stresstest"
+  ],
+  "cmd" : {
+    "coBranch" : "git checkout %s",
+    "coNewBranch" : "git checkout -b %s",
+    "listBranches" : "git branch -a"
+  }
+
+}
