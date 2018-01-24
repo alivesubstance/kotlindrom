@@ -24,7 +24,7 @@ class GitClient(val config: Config) {
         }
     }
 
-    fun findCurrentBranche(project: String): String {
+    fun findCurrentBranch(project: String): String {
         return findAllBranches(getProjectDir(project)).filter { it.isCurrent }.map { it.name }.first()
     }
 

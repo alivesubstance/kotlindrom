@@ -1,9 +1,6 @@
 package app
 
 import com.fasterxml.jackson.module.kotlin.*
-import java.io.File
-import java.net.URI
-import java.net.URL
 
 fun main(args: Array<String>) {
     GitBranchManager.start()
@@ -19,7 +16,7 @@ object GitBranchManager {
         val config = readConfig()
         val gitClient = GitClient(config)
 
-        config.projects.forEachIndexed { index, project -> println("[$index]$project (" + gitClient.findCurrentBranche(project) +")") }
+        config.projects.forEachIndexed { index, project -> println("[$index]$project (" + gitClient.findCurrentBranch(project) +")") }
 
         print("Choose project indexes(csv) or leave it blank to choose all: ")
         val selectedProjects = chooseProjects(config)
@@ -51,7 +48,7 @@ object GitBranchManager {
             return listOf()
         }
 
-        return selectedProjectsInput.split(",").map { it.toInt() }
+        return selectedProjectsInput.split(",").map { it.trim().toInt() }
     }
 }
 
