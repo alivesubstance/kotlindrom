@@ -9,6 +9,7 @@ class GitClient(val config: Config) {
     private val listBranchesCmd = config.cmd.get("listBranches")!!
     private val coBranchCmd = config.cmd.get("coBranch")!!
     private val coNewBranchCmd = config.cmd.get("coNewBranch")!!
+    private val removeBranch = config.cmd.get("removeBranch")!!
 
     fun checkoutBranch(project: String, branch: String) {
         println("Switch $project to branch $branch")
@@ -25,28 +26,52 @@ class GitClient(val config: Config) {
     }
 
     fun findCurrentBranch(project: String): String {
-        return findAllBranches(getProjectDir(project)).filter { it.isCurrent }.map { it.name }.first()
+        return findAllBranches(project).filter { it.isCurrent }.map { it.name }.first()
+    }
+
+    fun findAllBranches(project: String): List<Branch> {
+        return findAllBranches(getProjectDir(project))
     }
 
     private fun findAllBranches(projectDir: File): List<Branch> {
-        return listBranchesCmd.
-                runCommand(projectDir).
-                split("\n").
-                map { Branch(it) }.
-                toList()
+        val branches = listBranchesCmd
+                .runCommand(projectDir)
+                .split("\n")
+                .filter { it.isNotBlank() }
+                .filterNot { it.contains("HEAD") }
+                .map { Branch(it) }
+                .toList()
+
+        branches.filter { it.isRemote }
+                .forEach{ remoteBranch ->
+                    branches.filterNot { it.isRemote }
+                            .filter { remoteBranch.name == it.name }
+                            .forEach { it.isExistsLocally = true }
+                }
+
+        return branches
     }
 
+    fun removeLocalBranch(project: String, localBranches: Set<String>) {
+        localBranches.forEach { branch ->
+            println("Remove branch $branch")
+            removeBranch.format(branch).runCommand(getProjectDir(project))
+        }
+    }
+    
     private fun getProjectDir(project: String) = File(config.projectsRootPath + File.separator + project)
 }
 
 
-class Branch(var fullName: String) {
+class Branch(private var fullName: String) {
 
     private val remotesPrefix: String = "remotes/origin"
     private val currentBranchPrefix: String = "* "
 
     val isRemote: Boolean = fullName.contains(remotesPrefix)
     val isCurrent: Boolean
+
+    var isExistsLocally: Boolean = false
 
     init {
         isCurrent = fullName.startsWith(currentBranchPrefix)
@@ -55,12 +80,23 @@ class Branch(var fullName: String) {
 
     val name: String
         get() {
-            if (isRemote ) {
+            if (isRemote) {
                 return fullName.removePrefix(remotesPrefix + "/")
-            } else{
+            } else {
                 return fullName
             }
         }
+
+    override fun toString(): String {
+        val str = StringBuilder(fullName).append("[")
+        if (isExistsLocally) {
+            str.append("+")
+        } else {
+            str.append("-")
+        }
+
+        return str.append("]").toString()
+    }
 }
 
 fun String.runCommand(workingDir: File): String {
@@ -78,12 +114,8 @@ fun String.runCommand(workingDir: File): String {
         }
 
         return procText
-    } catch(e: IOException) {
+    } catch (e: IOException) {
         e.printStackTrace()
         throw RuntimeException(e)
     }
-}
-
-fun main(args: Array<String>) {
-    "git checkout -b CORE-3889_resteasy_dep".runCommand(File("c:\\tmp\\pleeco-core-parent"))
 }

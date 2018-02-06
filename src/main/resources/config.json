@@ -20,6 +20,7 @@
   "cmd" : {
     "coBranch" : "git checkout %s",
     "coNewBranch" : "git checkout -b %s",
-    "listBranches" : "git branch -a"
+    "listBranches" : "git branch -a",
+    "removeBranch": "git branch -d %s"
   }
 }

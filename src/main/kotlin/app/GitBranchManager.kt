@@ -1,19 +1,15 @@
 package app
 
-import com.fasterxml.jackson.module.kotlin.*
-
 fun main(args: Array<String>) {
     GitBranchManager.start()
 }
 
 object GitBranchManager {
 
-    var configFile = "config.json";
-
     fun start() {
         println("Available projects")
 
-        val config = readConfig()
+        val config = ConfigProvider.readConfig()
         val gitClient = GitClient(config)
 
         config.projects.forEachIndexed { index, project -> println("[$index]$project (" + gitClient.findCurrentBranch(project) +")") }
@@ -33,11 +29,6 @@ object GitBranchManager {
         }
 
         selectedProjects.forEach{ gitClient.checkoutBranch(config.projects.get(it), branch) }
-    }
-
-    private fun readConfig(): Config {
-        val json = GitBranchManager::class.java.getResource("/" + configFile).readText()
-        return jacksonObjectMapper().readValue(json)
     }
 
     private fun chooseProjects(config: Config): List<Int> {
