@@ -43,9 +43,9 @@ object PurgeGitBranch {
         println("Branches to remove")
         localBranchesToRemove.forEach{ branch -> println(branch) }
 
-        print("\nAre you sure you want to remove them?[Y/n]")
+        print("\nAre you sure you want to remove them?[y/n]")
         val confirmRemove = readLine()!!
-        if (confirmRemove.isBlank() || confirmRemove == "Y") {
+        if (confirmRemove == "y") {
             gitClient.removeLocalBranch(project, localBranchesToRemove)
         }
     }
