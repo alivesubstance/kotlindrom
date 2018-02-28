@@ -109,7 +109,7 @@ fun String.runCommand(workingDir: File): String {
                 .start()
 
         val procText = proc.inputStream.bufferedReader().readText()
-        if (proc.exitValue() != 0) {
+        if (!proc.waitFor(3, TimeUnit.SECONDS) || proc.exitValue() != 0) {
             throw RuntimeException("Error while executing $this \n ${proc.errorStream.bufferedReader().readText()}")
         }
 
