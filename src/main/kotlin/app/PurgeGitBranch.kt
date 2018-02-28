@@ -14,7 +14,7 @@ object PurgeGitBranch {
 
         config.projects.forEachIndexed { index, project -> println("[$index]$project") }
 
-        print("Choose project: ")
+        print("\nChoose project: ")
         val selectedProject = readLine()!!
         if (selectedProject.isBlank()) {
             println("No project selected")
@@ -40,7 +40,7 @@ object PurgeGitBranch {
         val localBranchesToRemove = localBranches.map { it.name }
                 .subtract(branches.filter { it.isRemote }.map { it.name })
 
-        println("Branches to remove")
+        println("\nBranches to remove:")
         localBranchesToRemove.forEach{ branch -> println(branch) }
 
         print("\nAre you sure you want to remove them?[y/n]")
