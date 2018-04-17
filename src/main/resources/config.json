@@ -9,9 +9,11 @@
     "pleeco-core-druid",
     "pleeco-core-etl",
     "pleeco-core-eventmanager",
+    "pleeco-core-keycloak",
     "pleeco-core-migrator",
     "pleeco-core-octopus",
     "pleeco-core-octopus-graph",
+    "pleeco-core-parent",
     "pleeco-core-reporting",
     "pleeco-module-basketanalysis",
     "pleeco-module-clientscorecard",
@@ -21,6 +23,7 @@
     "coBranch" : "git checkout %s",
     "coNewBranch" : "git checkout -b %s",
     "listBranches" : "git branch -a",
-    "removeBranch": "git branch -d %s"
+    "removeBranch": "git branch -d %s",
+    "branchLastCommitter": "git for-each-ref --format=%(refname)%09%(authorname)"
   }
 }

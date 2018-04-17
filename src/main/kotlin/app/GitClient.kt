@@ -1,5 +1,6 @@
 package app
 
+import app.model.BranchCommitter
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -10,6 +11,7 @@ class GitClient(val config: Config) {
     private val coBranchCmd = config.cmd.get("coBranch")!!
     private val coNewBranchCmd = config.cmd.get("coNewBranch")!!
     private val removeBranch = config.cmd.get("removeBranch")!!
+    private val branchLastCommitterCmd = config.cmd.get("branchLastCommitter")!!
 
     fun checkoutBranch(project: String, branch: String) {
         println("Switch $project to branch $branch")
@@ -58,10 +60,52 @@ class GitClient(val config: Config) {
             removeBranch.format(branch).runCommand(getProjectDir(project))
         }
     }
-    
+
+    fun fetch(project: String) {
+        println("Fetching $project")
+
+        "git fetch origin --prune".runCommand(getProjectDir(project));
+    }
+
+    fun findLastCommitter(project: String): List<BranchCommitter> {
+        println("Looking for $project authors")
+
+        fetch(project);
+
+        return branchLastCommitterCmd.runCommand(getProjectDir(project))
+                .split("\n")
+                .filter { it.isNotBlank() }
+                .filter { it.contains("remotes") }
+                .filterNot { it.contains("HEAD") }
+                .filterNot { it.contains("develop") }
+                .filterNot { it.contains("master") }
+                .filterNot { it.contains("release") }
+                .map { BranchCommitter(project, it) }
+    }
+
     private fun getProjectDir(project: String) = File(config.projectsRootPath + File.separator + project)
 }
 
+fun String.runCommand(workingDir: File): String {
+    try {
+        val parts = this.split("\\s".toRegex())
+        val proc = ProcessBuilder(*parts.toTypedArray())
+                .directory(workingDir)
+                .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                .redirectError(ProcessBuilder.Redirect.PIPE)
+                .start()
+
+        val procText = proc.inputStream.bufferedReader().readText()
+        if (!proc.waitFor(10, TimeUnit.SECONDS) || proc.exitValue() != 0) {
+            throw RuntimeException("Error while executing $this \n ${proc.errorStream.bufferedReader().readText()}")
+        }
+
+        return procText
+    } catch (e: IOException) {
+        e.printStackTrace()
+        throw RuntimeException(e)
+    }
+}
 
 class Branch(private var fullName: String) {
 
@@ -96,26 +140,5 @@ class Branch(private var fullName: String) {
         }
 
         return str.append("]").toString()
-    }
-}
-
-fun String.runCommand(workingDir: File): String {
-    try {
-        val parts = this.split("\\s".toRegex())
-        val proc = ProcessBuilder(*parts.toTypedArray())
-                .directory(workingDir)
-                .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                .redirectError(ProcessBuilder.Redirect.PIPE)
-                .start()
-
-        val procText = proc.inputStream.bufferedReader().readText()
-        if (!proc.waitFor(3, TimeUnit.SECONDS) || proc.exitValue() != 0) {
-            throw RuntimeException("Error while executing $this \n ${proc.errorStream.bufferedReader().readText()}")
-        }
-
-        return procText
-    } catch (e: IOException) {
-        e.printStackTrace()
-        throw RuntimeException(e)
     }
 }
