@@ -1,6 +1,6 @@
-package app
+package app.git
 
-import app.model.BranchCommitter
+import app.git.model.BranchCommitter
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit

@@ -1,7 +1,7 @@
-import app.Branch
+package app.git
+
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class BranchTest {
 

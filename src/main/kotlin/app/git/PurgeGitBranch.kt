@@ -1,4 +1,4 @@
-package app
+package app.git
 
 fun main(args: Array<String>) {
     PurgeGitBranch.start()

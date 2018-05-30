@@ -1,4 +1,4 @@
-package app.model;
+package app.git.model;
 
 class BranchCommitter(val project: String, private val ref: String) {
     var branch: String
