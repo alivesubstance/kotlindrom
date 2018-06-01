@@ -1,0 +1,4 @@
+
+    <changeSet author="migrator" id="_ID_">
+        <sqlFile dbms="oracle" endDelimiter="" encoding="utf8" path="_PATH_" />
+    </changeSet>
