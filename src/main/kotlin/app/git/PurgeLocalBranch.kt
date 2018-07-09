@@ -1,10 +1,10 @@
 package app.git
 
 fun main(args: Array<String>) {
-    PurgeGitBranch.start()
+    PurgeLocalBranch.start()
 }
 
-object PurgeGitBranch {
+object PurgeLocalBranch {
 
     fun start() {
         println("Purge project branches")
@@ -12,7 +12,8 @@ object PurgeGitBranch {
         val config = ConfigProvider.readConfig()
         val gitClient = GitClient(config)
 
-        config.projects.forEachIndexed { index, project -> println("[$index]$project") }
+        val projects = config.listProjects()
+        projects.forEachIndexed { index, project -> println("[$index]$project") }
 
         print("\nChoose project: ")
         val selectedProject = readLine()!!
@@ -21,7 +22,7 @@ object PurgeGitBranch {
             return
         }
 
-        val project = config.projects[selectedProject.toInt()]
+        val project = projects[selectedProject.toInt()]
         val branches = gitClient.findAllBranches(project)
 
         println("\nList of local branches('+' exists on remote, '-' not exists on remote)")

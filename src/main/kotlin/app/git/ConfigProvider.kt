@@ -1,5 +1,6 @@
 package app.git
 
+import app.git.model.Config
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 

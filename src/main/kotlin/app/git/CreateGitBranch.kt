@@ -1,5 +1,7 @@
 package app.git
 
+import app.git.model.Config
+
 fun main(args: Array<String>) {
     GitBranchManager.start()
 }
@@ -12,7 +14,7 @@ object GitBranchManager {
         val config = ConfigProvider.readConfig()
         val gitClient = GitClient(config)
 
-        config.projects.forEachIndexed { index, project -> println("[$index]$project (" + gitClient.findCurrentBranch(project) +")") }
+        config.listProjects().forEachIndexed { index, project -> println("[$index]$project (" + gitClient.findCurrentBranch(project) +")") }
 
         print("\nChoose project indexes(csv) or leave it blank to choose all: ")
         val selectedProjects = chooseProjects(config)
@@ -28,13 +30,13 @@ object GitBranchManager {
             return
         }
 
-        selectedProjects.forEach{ gitClient.checkoutBranch(config.projects.get(it), branch) }
+        selectedProjects.forEach{ gitClient.checkoutBranch(config.listProjects().get(it), branch) }
     }
 
     private fun chooseProjects(config: Config): List<Int> {
         val selectedProjectsInput = readLine()!!
         if (selectedProjectsInput.isEmpty()) {
-            return (0 until config.projects.size).toList()
+            return (0 until config.listProjects().size).toList()
         } else if (selectedProjectsInput.isEmpty()) {
             return listOf()
         }
@@ -43,4 +45,3 @@ object GitBranchManager {
     }
 }
 
-data class Config(val projectsRootPath: String, val projects: List<String>, val cmd: Map<String, String>)

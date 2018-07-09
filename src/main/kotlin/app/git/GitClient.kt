@@ -1,6 +1,7 @@
 package app.git
 
 import app.git.model.BranchCommitter
+import app.git.model.Config
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -11,6 +12,7 @@ class GitClient(val config: Config) {
     private val coBranchCmd = config.cmd.get("coBranch")!!
     private val coNewBranchCmd = config.cmd.get("coNewBranch")!!
     private val removeBranch = config.cmd.get("removeBranch")!!
+    private val removeBranchForce = config.cmd.get("removeBranchForce")!!
     private val branchLastCommitterCmd = config.cmd.get("branchLastCommitter")!!
 
     fun checkoutBranch(project: String, branch: String) {
@@ -57,7 +59,18 @@ class GitClient(val config: Config) {
     fun removeLocalBranch(project: String, localBranches: Set<String>) {
         localBranches.forEach { branch ->
             println("Remove branch $branch")
-            removeBranch.format(branch).runCommand(getProjectDir(project))
+            try {
+                removeBranch.format(branch).runCommand(getProjectDir(project))
+            } catch (e: Exception) {
+                println("Failed to remove $branch: " + e.message)
+                println("Force remove $branch?[y/n]")
+
+                val confirmRemove = readLine()!!
+                if (confirmRemove == "y") {
+                    removeBranchForce.format(branch).runCommand(getProjectDir(project))
+                    println("Branch $branch removed")
+                }
+            }
         }
     }
 
