@@ -8,12 +8,12 @@ import java.util.concurrent.TimeUnit
 
 class GitClient(val config: Config) {
 
-    private val listBranchesCmd = config.cmd.get("listBranches")!!
-    private val coBranchCmd = config.cmd.get("coBranch")!!
-    private val coNewBranchCmd = config.cmd.get("coNewBranch")!!
-    private val removeBranch = config.cmd.get("removeBranch")!!
-    private val removeBranchForce = config.cmd.get("removeBranchForce")!!
-    private val branchLastCommitterCmd = config.cmd.get("branchLastCommitter")!!
+    private val listBranchesCmd = config.cmd["listBranches"]!!
+    private val coBranchCmd = config.cmd["coBranch"]!!
+    private val coNewBranchCmd = config.cmd["coNewBranch"]!!
+    private val removeBranch = config.cmd["removeBranch"]!!
+    private val removeBranchForce = config.cmd["removeBranchForce"]!!
+    private val branchLastCommitterCmd = config.cmd["branchLastCommitter"]!!
 
     fun checkoutBranch(project: String, branch: String) {
         println("Switch $project to branch $branch")
