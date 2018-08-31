@@ -96,7 +96,7 @@ class GitClient(val config: Config) {
                 .map { BranchCommitter(project, it) }
     }
 
-    private fun getProjectDir(project: String) = File(config.projectsRootPath + File.separator + project)
+    private fun getProjectDir(project: String) = File(config.projectsRootPath, project)
 }
 
 fun String.runCommand(workingDir: File): String {
