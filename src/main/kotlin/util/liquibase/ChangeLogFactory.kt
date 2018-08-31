@@ -1,4 +1,4 @@
-package liquibase
+package util.liquibase
 
 import java.io.File
 import java.io.FileWriter
