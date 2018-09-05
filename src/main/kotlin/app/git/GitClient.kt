@@ -58,12 +58,12 @@ class GitClient(val config: Config) {
 
     fun removeLocalBranch(project: String, localBranches: Set<String>) {
         localBranches.forEach { branch ->
-            println("Remove branch $branch")
+            println("Removing branch $branch")
             try {
                 removeBranch.format(branch).runCommand(getProjectDir(project))
             } catch (e: Exception) {
-                println("Failed to remove $branch: " + e.message)
-                println("Force remove $branch?[y/n]")
+                println("Failed to remove $branch: \n " + e.message)
+                print("Force remove $branch?[y/n]")
 
                 val confirmRemove = readLine()!!
                 if (confirmRemove == "y") {
