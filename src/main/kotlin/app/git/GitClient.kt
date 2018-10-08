@@ -12,7 +12,6 @@ class GitClient(val config: Config) {
     private val coBranchCmd = config.cmd["coBranch"]!!
     private val coNewBranchCmd = config.cmd["coNewBranch"]!!
     private val removeBranch = config.cmd["removeBranch"]!!
-    private val removeBranchForce = config.cmd["removeBranchForce"]!!
     private val branchLastCommitterCmd = config.cmd["branchLastCommitter"]!!
 
     fun checkoutBranch(project: String, branch: String) {
@@ -59,18 +58,7 @@ class GitClient(val config: Config) {
     fun removeLocalBranch(project: String, localBranches: Set<String>) {
         localBranches.forEach { branch ->
             println("Removing branch $branch")
-            try {
-                removeBranch.format(branch).runCommand(getProjectDir(project))
-            } catch (e: Exception) {
-                println("Failed to remove $branch: \n " + e.message)
-                print("Force remove $branch?[y/n]")
-
-                val confirmRemove = readLine()!!
-                if (confirmRemove == "y") {
-                    removeBranchForce.format(branch).runCommand(getProjectDir(project))
-                    println("Branch $branch removed")
-                }
-            }
+            removeBranch.format(branch).runCommand(getProjectDir(project))
         }
     }
 

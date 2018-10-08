@@ -4,8 +4,7 @@
     "coBranch" : "git checkout %s",
     "coNewBranch" : "git checkout -b %s",
     "listBranches" : "git branch -a",
-    "removeBranch": "git branch -d %s",
-    "removeBranchForce": "git branch --delete --force %s",
+    "removeBranch": "git branch --delete --force %s",
     "branchLastCommitter": "git for-each-ref --format=%(refname)%09%(authorname)"
   }
 }
