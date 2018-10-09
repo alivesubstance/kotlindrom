@@ -33,7 +33,13 @@ class GitClient(val config: Config) {
     }
 
     fun findAllBranches(project: String): List<Branch> {
-        return findAllBranches(getProjectDir(project))
+        return try {
+            findAllBranches(getProjectDir(project))
+        } catch (e: Exception) {
+            // it can happens in case of non git repository
+            println("Failed to list branches from project $project: ${e.message}")
+            emptyList()
+        }
     }
 
     private fun findAllBranches(projectDir: File): List<Branch> {
