@@ -3,15 +3,16 @@ package t1
 import java.io.File
 
 fun main(args: Array<String>) {
-    analyzeLogsFromDb("/home/mirian/downloads/t1-pipeline-logs-20180925_000001.tar.gz")
+    analyzeLogsFromDb()
 
 //    JdbcClient.getJobHistoryStats()
 }
 
-fun analyzeLogsFromDb(gzipUrl: String) {
+fun analyzeLogsFromDb() {
     val gzipFile: File?
+    val gzipUrl = System.getProperty("logsUrl")
     if (gzipUrl.startsWith("s3")) {
-        gzipFile = AmazonS3Client.get(System.getProperty("s3LogsUrl"))
+        gzipFile = AmazonS3Client.get(gzipUrl)
     } else {
         gzipFile = File(gzipUrl)
     }
@@ -29,8 +30,9 @@ fun analyzeLogsFromDb(gzipUrl: String) {
     println("List of broken jobs is:\n\t - ${brokenJobs.joinToString("\n\t - ")}\n")
 
     brokenJobs.forEach {
-        println("Analyzing job ---$it---")
-        println(LogAnalyzer.getExceptionMessages(logsDir, it))
+        val logFile = LogAnalyzer.findFileByName(logsDir, it)
+        println("---$it, $logFile")
+        println(LogAnalyzer.getExceptionMessages(logFile))
         println()
     }
 }

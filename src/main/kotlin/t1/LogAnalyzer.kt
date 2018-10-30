@@ -14,7 +14,8 @@ object LogAnalyzer {
         val brokenJobs = arrayListOf<String>()
 
         val lines = FileReader(messageFile).readLines()
-        val jobListStartIdx = lines.indexOf("Staging Execution details:")
+        //TODO remove this chit and analyze logs directly
+        val jobListStartIdx = lines.withIndex().filter { it.value.contains("Execution details:") }.map { it.index }[0]
         lines.drop(jobListStartIdx).forEach {
             val matcher = JOB_MSG_PATTERN.matcher(it)
             if (matcher.find()) {
@@ -29,13 +30,13 @@ object LogAnalyzer {
         return brokenJobs;
     }
 
-    fun getExceptionMessages(logsDir: File, jobName: String): String {
-        return FileReader(findFileByName(logsDir, jobName))
+    fun getExceptionMessages(logFile: File): String {
+        return FileReader(logFile)
                 .readLines()
                 .filter { it.startsWith("Caused by") || it.contains("DataLoadingException") }
                 .joinToString("\n")
     }
 
-    private fun findFileByName(logsDir: File, fileName: String) = logsDir.listFiles().first { it.name.startsWith(fileName) }
+    fun findFileByName(logsDir: File, fileName: String) = logsDir.listFiles().first { it.name.startsWith(fileName) }
 
 }
