@@ -9,7 +9,7 @@ object ConfigProvider {
     private const val CONFIG_FILE = "git/config.json";
 
     fun readConfig(): Config {
-        val json = GitBranchManager::class.java.getResource("/$CONFIG_FILE").readText()
+        val json = CheckoutBranch::class.java.getResource("/$CONFIG_FILE").readText()
         return jacksonObjectMapper().readValue(json)
     }
 

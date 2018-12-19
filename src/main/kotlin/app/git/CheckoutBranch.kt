@@ -3,10 +3,10 @@ package app.git
 import app.git.model.Config
 
 fun main(args: Array<String>) {
-    GitBranchManager.start()
+    CheckoutBranch.start()
 }
 
-object GitBranchManager {
+object CheckoutBranch {
 
     fun start() {
         println("Available projects")
